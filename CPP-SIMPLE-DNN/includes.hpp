@@ -7,4 +7,4 @@
 #include <iostream>
 #include <chrono>
 
-#include "float_random.cuh"
+#include "float_random.hpp"

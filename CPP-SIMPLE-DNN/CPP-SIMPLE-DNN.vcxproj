@@ -80,7 +80,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="activation.hpp" />
-    <ClInclude Include="float_random.cuh" />
+    <ClInclude Include="float_random.hpp" />
     <ClInclude Include="includes.hpp" />
     <ClInclude Include="neural_network.hpp" />
   </ItemGroup>
