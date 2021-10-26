@@ -172,6 +172,7 @@ double DNN::Network::backPropagate(double* outputs)
 	And the second equation relies on the following layer's derivative, which *isn't* available at the last layer.
 	*/
 
+	// calculate dc_do for last layer (and calculate loss)
 	double loss = 0;
 	const Layer* lastLayer = this->layers[this->layerCount - 1];
 	for (size_t i = 0; i < lastLayer->size; i++)
