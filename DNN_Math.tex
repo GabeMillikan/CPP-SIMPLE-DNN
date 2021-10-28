@@ -1,0 +1,78 @@
+\documentclass[12pt]{article}
+
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb,tabularx,physics}
+
+\title{
+    Mathematics of a Deep Neural Network
+}
+\author{
+    Gabe Millikan
+}
+\date{October 26, 2021}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+
+    \vspace{2in}
+    \textbf{Note} \\
+    This is intended to act as a reference to use while writing code; \\
+    not as a comprehensive guide to how neural networks work. \\
+    The goal is only to describe the mathematical operations required \\
+    to implement stochastic gradient descent in CUDA.
+
+\end{center}
+
+\pagebreak
+\begin{center}
+    \begin{tabularx}{\textwidth}{c|X}
+        \textbf{Variable} & \textbf{Value} \\
+        \hline
+        $ S_{n} $ & Height of the $n$th layer \\
+        \hline
+        $L$ & Number of layers in the network. Does not include input vector\\
+        \hline
+        $S_L$ & Number of neurons in the last layer. Equal to number of outputs\\
+        \hline
+        $S_1$ & Number of neurons in the first layer\\
+        \hline
+        $S_0$ & Number of inputs to the network. Just a convention; there is no "$0$th layer", and the inputs are not part of the network shape\\
+        \hline
+        $C$ & Cost function. Mean squared error is used exclusively in this paper \\
+        \hline
+        $ \sigma_{n} $ & Activation function of the nth layer (any differentiable function - not just sigmoid) \\
+        \hline
+        $ w_{nij} $ & $j$th weight of the $i$th neuron in the $n$th layer. $j$ corresponds to a neuron in the previous layer, or in the input vector if $i = 1$ \\
+        \hline
+        $ b_{ni} $ & The bias of $i$th neuron in the $n$th layer \\
+        \hline
+        $ o_{ni} $ & Output of the $i$th neuron in the $n$th layer, prior to activation \\
+        \hline
+        $ a_{ni} $ & Output of the $i$th neuron in the $n$th layer, after activation \\
+        \hline
+        $ a_{0i} $ & The $i$th input value. Just a convention; like $S_0$ \\
+        \hline
+        $ T_i $ & The $i$th target value. In a perfectly trained network, this is equal to $a_{Li}$ \\
+    \end{tabularx}
+\end{center}
+
+\pagebreak
+
+\begin{gather*}
+    o_{ni} = \qty[\sum_{j = 1}^{S_{n - 1}} w_{nij} \cdot a_{(n-1)j}] + b_{ni} \\
+    a_{ni} = \sigma(o_{ni}) \\
+    \\
+    C = \frac{1}{S_L} \sum_{i=1}^{S_L} \qty(a_{Li} - T_{i})^2 \\
+    \frac{\partial C}{\partial a_{Li}} = 2\cdot\frac{1}{S_L}\cdot\qty(a_{Li} - T_{i}) \\
+    \frac{\partial C}{\partial o_{Li}} = \frac{\partial C}{\partial a_{Li}} \cdot \frac{\partial a_{Li}}{\partial o_{Li}} = \frac{\partial C}{\partial a_{Li}}\cdot \sigma ^\prime\qty(o_{Li}) \\
+    \\
+    \frac{\partial C}{\partial a_{ni}} = \sum_{j=1}^{S_{n+1}} \frac{\partial C}{\partial o_{(n+1)j}}\cdot w_{(n+1)ji}\\
+    \frac{\partial C}{\partial o_{ni}} = \frac{\partial C}{\partial a_{ni}} \cdot \frac{\partial a_{ni}}{\partial o_{ni}} = \frac{\partial C}{\partial a_{ni}} \cdot \sigma ^ \prime \qty(o_{ni}) \\
+    \\
+    \frac{\partial C}{\partial w_{nij}} = \frac{\partial C}{\partial o_{ni}} \cdot \frac{\partial o_{ni}}{\partial w_{nij}} = \frac{\partial C}{\partial o_{ni}} \cdot a_{(n-1)j} \\
+    \frac{\partial C}{\partial b_{ni}} = \frac{\partial C}{\partial o_{ni}} \cdot \frac{\partial o_{ni}}{\partial b_{ni}} = \frac{\partial C}{\partial o_{ni}} \cdot 1 = \frac{\partial C}{\partial o_{ni}}\\
+\end{gather*}
+
+\end{document}
