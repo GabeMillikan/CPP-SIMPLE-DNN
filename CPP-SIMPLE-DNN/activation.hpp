@@ -11,6 +11,7 @@ namespace Activation
 		Sigmoid
 	};
 
+	const char* stringifyActivator(const Activator& activator);
 	double activate(const Activator& activator, const double& input);
 	double differentiate(const Activator& activator, const double& input);
 }

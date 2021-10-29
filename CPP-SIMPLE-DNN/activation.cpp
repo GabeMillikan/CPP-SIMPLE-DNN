@@ -1,5 +1,19 @@
 #include "activation.hpp"
 
+const char* Activation::stringifyActivator(const Activator& activator)
+{
+	switch (activator)
+	{
+	default:
+	case Activator::Linear:
+		return "Linear";
+	case Activator::ReLu:
+		return "ReLu";
+	case Activator::Sigmoid:
+		return "Sigmoid";
+	}
+}
+
 double Activation::activate(const Activator& activator, const double& input)
 {
 	switch (activator)

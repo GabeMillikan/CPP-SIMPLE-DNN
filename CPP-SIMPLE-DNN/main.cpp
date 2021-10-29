@@ -1,54 +1,69 @@
 #include "includes.hpp"
-#include "neural_network.hpp"
-
+#include "network.hpp"
+#include "trainer.hpp"
+#include "mnist.hpp"
 namespace DNN = DeepNeuralNetwork;
 
 int main()
 {
-	// create a network with 3 layers:
-	//		the input layer of height 2
-	//		then a hidden layer with 1 neuron (linear activation, same as `None` activation)
-	//		then the output layer, with one neuron
-	DNN::Network nn = DNN::Network(
+	if (!MNIST::load()) std::exit(1);
+
+	DNN::Network net(
+		MNIST::IMAGE_SIZE,
 		{
-			DNN::LayerDescription(1, Activation::Activator::Linear),
-			1 // exactly identical to above layer, linear is default
-		},
-		2, // number of inputs
-		0.001 // learning rate
+			{64, Activation::Activator::ReLu},
+			MNIST::LABEL_COUNT
+		}, 
+		64,
+		0.002
 	);
 
-	// how many training steps
-	size_t N = 10000;
+	DNN::Trainer trainer(&net, MNIST::EXAMPLE_COUNT, MNIST::images, MNIST::labels);
 
-	// running average of loss
-	double lossRunningAvg = 0;
-	for (size_t i = 1; i <= N; i++)
+	while (true)
 	{
-		// this neural network will be adding together its 2 inputs
-		// generate a random example
-		double inputs[] = {
-			randf<-10, 10>(),
-			randf<-10, 10>()
-		};
-		double output = inputs[0] + inputs[1];
+		double t = trainer.train(6);
+		printf("Trained for %.2f seconds\n", t);
 
-		nn.feedForward(inputs);
-		double loss = nn.backPropagate(&output);
-		lossRunningAvg = (loss * 0.1 + lossRunningAvg * 9.9) / 10.;
+		double accuracy = trainer.evaluate(DNN::EvaluationMethod::categoricalAccuracy);
+		printf("Current accuracy: %.2f%%\n", accuracy * 100.0);
 
-		if (i % 1000 == 0)
-		{
-			std::cout << "step " << i << ": loss = " << lossRunningAvg << std::endl;
-		}
+		net.learningRate *= 0.75;
 	}
 
-	double inputs[] = {
-		randf<-10, 10>(),
-		randf<-10, 10>()
-	};
-	nn.feedForward(inputs);
-	std::cout << nn.fedInputs[0] << " + " << nn.fedInputs[1] << " = " << nn.outputs[0] << std::endl;
+	MNIST::unload();
 
-	return 0;
+	/*
+	size_t batchSize = 10;
+	size_t ioSize = 100;
+	DNN::Network net({ ioSize }, ioSize, batchSize, 5);
+
+	double** batchedInputs = new double* [batchSize];
+	double** batchedOutputs = new double* [batchSize];
+
+	for (size_t i = 0; i < batchSize; i++)
+	{
+		batchedInputs[i] = new double[ioSize];
+		batchedOutputs[i] = new double[ioSize];
+	}
+
+	double runningLoss = 100.0;
+	size_t i = 0;
+	while (runningLoss >= 0.0001)
+	{
+		for (size_t j = 0; j < batchSize; j++)
+		{
+			for (size_t k = 0; k < ioSize; k++)
+			{
+				batchedInputs[j][k] = batchedOutputs[j][k] = randf<-1, 1>();
+			}
+		}
+
+		double loss = net.train(batchedInputs, batchedOutputs);
+		runningLoss = (runningLoss * 99 + loss) / 100.;
+		printf("Loss: %.8f    \r", runningLoss);
+		i++;
+	}
+	printf("\nThat took %d iterations.\n", i);
+	*/
 }
