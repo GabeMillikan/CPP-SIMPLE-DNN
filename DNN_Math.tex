@@ -62,14 +62,14 @@
 
 \begin{gather*}
     o_{ni} = \qty[\sum_{j = 1}^{S_{n - 1}} w_{nij} \cdot a_{(n-1)j}] + b_{ni} \\
-    a_{ni} = \sigma(o_{ni}) \\
+    a_{ni} = \sigma_n(o_{ni}) \\
     \\
     C = \frac{1}{S_L} \sum_{i=1}^{S_L} \qty(a_{Li} - T_{i})^2 \\
     \frac{\partial C}{\partial a_{Li}} = 2\cdot\frac{1}{S_L}\cdot\qty(a_{Li} - T_{i}) \\
-    \frac{\partial C}{\partial o_{Li}} = \frac{\partial C}{\partial a_{Li}} \cdot \frac{\partial a_{Li}}{\partial o_{Li}} = \frac{\partial C}{\partial a_{Li}}\cdot \sigma ^\prime\qty(o_{Li}) \\
+    \frac{\partial C}{\partial o_{Li}} = \frac{\partial C}{\partial a_{Li}} \cdot \frac{\partial a_{Li}}{\partial o_{Li}} = \frac{\partial C}{\partial a_{Li}}\cdot \sigma_L ^\prime\qty(o_{Li}) \\
     \\
     \frac{\partial C}{\partial a_{ni}} = \sum_{j=1}^{S_{n+1}} \frac{\partial C}{\partial o_{(n+1)j}}\cdot w_{(n+1)ji}\\
-    \frac{\partial C}{\partial o_{ni}} = \frac{\partial C}{\partial a_{ni}} \cdot \frac{\partial a_{ni}}{\partial o_{ni}} = \frac{\partial C}{\partial a_{ni}} \cdot \sigma ^ \prime \qty(o_{ni}) \\
+    \frac{\partial C}{\partial o_{ni}} = \frac{\partial C}{\partial a_{ni}} \cdot \frac{\partial a_{ni}}{\partial o_{ni}} = \frac{\partial C}{\partial a_{ni}} \cdot \sigma_n ^ \prime \qty(o_{ni}) \\
     \\
     \frac{\partial C}{\partial w_{nij}} = \frac{\partial C}{\partial o_{ni}} \cdot \frac{\partial o_{ni}}{\partial w_{nij}} = \frac{\partial C}{\partial o_{ni}} \cdot a_{(n-1)j} \\
     \frac{\partial C}{\partial b_{ni}} = \frac{\partial C}{\partial o_{ni}} \cdot \frac{\partial o_{ni}}{\partial b_{ni}} = \frac{\partial C}{\partial o_{ni}} \cdot 1 = \frac{\partial C}{\partial o_{ni}}\\
